@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <script type="text/javascript">
-      (function() {
-        var segments = window.location.pathname.split('/').filter(Boolean);
-        if (segments.length > 0) {
-          var sub = segments.shift();
-          var rest = segments.join('/');
-          window.location.replace("https://" + sub + ".sanjonescreeks.online/" + rest);
-        } else {
-          window.location.replace("https://sanjonescreeks.online/");
-        }
-      })();
-    </script>
-    <meta http-equiv="refresh" content="2; url=https://sanjonescreeks.online/">
-  </head>
-  <body>Redirecting...</body>
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+    (function() {
+      var segments = window.location.pathname.split('/').filter(Boolean);
+      
+      if (segments.length > 0) {
+        var firstPath = segments.shift();           // this becomes the subdomain
+        var rest = segments.join('/');              // everything after it
+        
+        var finalUrl = "https://" + firstPath + ".itrimex.de";
+        if (rest) finalUrl += "/" + rest;
+        
+        window.location.replace(finalUrl);
+      } else {
+        // fallback if no path
+        window.location.replace("https://itrimex.de/");
+      }
+    })();
+  </script>
+  
+  <!-- Fallback meta refresh -->
+  <meta http-equiv="refresh" content="2; url=https://itrimex.de/">
+</head>
+<body>Redirecting...</body>
 </html>
