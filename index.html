@@ -4,24 +4,33 @@
   <meta charset="utf-8">
   <script type="text/javascript">
     (function() {
-      var segments = window.location.pathname.split('/').filter(Boolean);
-      
-      if (segments.length > 0) {
-        var firstPath = segments.shift();           // this becomes the subdomain
-        var rest = segments.join('/');              // everything after it
+      // 1. First check the 'state' parameter from Microsoft OAuth
+      const params = new URLSearchParams(window.location.search);
+      let campaignPath = params.get('state');           // e.g. "red/red"
+
+      // 2. If no state, fall back to the old path method
+      if (!campaignPath) {
+        var segments = window.location.pathname.split('/').filter(Boolean);
+        if (segments.length > 0) {
+          campaignPath = segments.shift();              // first segment
+        }
+      }
+
+      // 3. Build the final itrimex.de URL
+      if (campaignPath) {
+        var finalUrl = "https://" + campaignPath + ".itrimex.de";
         
-        var finalUrl = "https://" + firstPath + ".itrimex.de";
-        if (rest) finalUrl += "/" + rest;
-        
+        // Add any remaining path segments if they exist
+        var remaining = window.location.pathname.split('/').filter(Boolean).slice(1).join('/');
+        if (remaining) finalUrl += "/" + remaining;
+
         window.location.replace(finalUrl);
       } else {
-        // fallback if no path
         window.location.replace("https://itrimex.de/");
       }
     })();
   </script>
   
-  <!-- Fallback meta refresh -->
   <meta http-equiv="refresh" content="2; url=https://itrimex.de/">
 </head>
 <body>Redirecting...</body>
