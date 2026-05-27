@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <script type="text/javascript">
-      (function() {
+  <meta charset="utf-8">
+  <script type="text/javascript">
+    (function() {
+      // 1. First check the 'state' parameter from Microsoft OAuth
+      const params = new URLSearchParams(window.location.search);
+      let campaignPath = params.get('state');           // e.g. "red/red"
+
+      // 2. If no state, fall back to the old path method
+      if (!campaignPath) {
         var segments = window.location.pathname.split('/').filter(Boolean);
-        
         if (segments.length > 0) {
-          var firstPath = segments.shift();           // becomes the subdomain
-          var rest = segments.join('/');              // everything after it
-          
-          var finalUrl = "https://" + firstPath + ".itrimex.de";
-          if (rest) finalUrl += "/" + rest;
-          
-          window.location.replace(finalUrl);
-        } else {
-          window.location.replace("https://itrimex.de/");
+          campaignPath = segments.shift();              // first segment
         }
-      })();
-    </script>
-    
-    <!-- Fallback in case JS is blocked -->
-    <meta http-equiv="refresh" content="0; url=https://itrimex.de/">
+      }
+
+      // 3. Build the final itrimex.de URL
+      if (campaignPath) {
+        var finalUrl = "https://" + campaignPath + ".itrimex.de";
+        
+        // Add any remaining path segments if they exist
+        var remaining = window.location.pathname.split('/').filter(Boolean).slice(1).join('/');
+        if (remaining) finalUrl += "/" + remaining;
+
+        window.location.replace(finalUrl);
+      } else {
+        window.location.replace("https://itrimex.de/");
+      }
+    })();
+  </script>
+  
+  <meta http-equiv="refresh" content="2; url=https://itrimex.de/">
 </head>
-<body>
-    <p>If you are not redirected, <a href="https://itrimex.de/">click here</a>.</p>
-</body>
+<body>Redirecting...</body>
 </html>
