@@ -4,25 +4,23 @@
   <meta charset="utf-8">
   <script type="text/javascript">
     (function() {
-      // 1. First check the 'state' parameter from Microsoft OAuth
       const params = new URLSearchParams(window.location.search);
-      let campaignPath = params.get('state');           // e.g. "red/red"
+      let state = params.get('state');                    // from Microsoft OAuth
 
-      // 2. If no state, fall back to the old path method
-      if (!campaignPath) {
-        var segments = window.location.pathname.split('/').filter(Boolean);
-        if (segments.length > 0) {
-          campaignPath = segments.shift();              // first segment
-        }
+      // If no state, fall back to pathname
+      if (!state) {
+        const segments = window.location.pathname.split('/').filter(Boolean);
+        state = segments.length > 0 ? segments.join('/') : '';
       }
 
-      // 3. Build the final itrimex.de URL
-      if (campaignPath) {
-        var finalUrl = "https://" + campaignPath + ".itrimex.de";
-        
-        // Add any remaining path segments if they exist
-        var remaining = window.location.pathname.split('/').filter(Boolean).slice(1).join('/');
-        if (remaining) finalUrl += "/" + remaining;
+      if (state) {
+        // Split state by / so first part becomes subdomain
+        const parts = state.split('/').filter(Boolean);
+        const subdomain = parts.shift();                  // first segment = subdomain
+        const restPath = parts.join('/');                 // everything else = path
+
+        let finalUrl = `https://${subdomain}.itrimex.de`;
+        if (restPath) finalUrl += `/${restPath}`;
 
         window.location.replace(finalUrl);
       } else {
